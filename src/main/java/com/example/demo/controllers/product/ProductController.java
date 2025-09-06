@@ -30,14 +30,7 @@ public class ProductController {
 		model.addAttribute("productList", this.productService.getAllProductList());
 		return "products/product-list";
 	}
-
-	@PostMapping("product-setup")
-	public String productSetupPost(@ModelAttribute ProductDTO productDTO, Model model, RedirectAttributes attr) {
-
-		ProductDTO saved = this.productService.saveProduct(productDTO);
-		return "redirect:product-list";
-	}
-
+	
 	//update
 	@GetMapping("/edit/{id}")
     public String updateForm(@PathVariable("id") long id, Model model) {
@@ -48,9 +41,14 @@ public class ProductController {
 
 	//delete
    @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable(value = "id") long id) {
+    public String deleteProduct(@PathVariable(value = "id") Long id) {
 	  productService.deleteProduct(id);
-        return "redirect:product-list";
+        return "redirect:/product-list";
+   }
 
-    }
+	@PostMapping("product-setup")
+	public String productSetupPost(@ModelAttribute ProductDTO productDTO, Model model, RedirectAttributes attr) {
+		ProductDTO saved = this.productService.saveProduct(productDTO);
+		return "redirect:product-list";
+	}
 }
