@@ -29,9 +29,9 @@ public class ProductDTO {
 			this.description = product.getDescription();
 			this.status = product.getStatus();
 			this.prices = product.getPrice();
-			
+
 			this.statusDesc = status != null && status.equals(1) ? "Active":"Inactive";
-			
+
 		}
 	}
 }

@@ -11,10 +11,10 @@ public class WelcomeController {
 	public String homePage(Model model) {
 		return "index";
 	}
-	
+
 	@GetMapping("/about-us")
 	public String aboutUs() {
 		return "pages/aboutus";
 	}
-	
+
 }
