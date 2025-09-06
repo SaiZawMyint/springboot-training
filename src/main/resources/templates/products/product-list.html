@@ -1,30 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/base-layout}">
 <head>
-<meta charset="UTF-8">
 <title>Product List</title>
 </head>
 <body>
-<h1>Product List</h1>
-<table>
-	<thead>
-		<tr>
-			<td>Id</td>
-			<td>Name</td>
-			<td>Description</td>
-			<td>Status</td>
-			<td>Price</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr th:each="product : ${productList}">
-			<td th:text="${product.id}"></td>
-			<td th:text="${product.name}"></td>
-			<td th:text="${product.description}"></td>
-			<td th:text="${product.statusDesc}"></td>
-			<td th:text="${product.prices}"></td>
-		</tr>
-	</tbody>
-</table>
+	<div layout:fragment="content">
+		<h1>Product List</h1>
+		<table>
+			<thead>
+				<tr>
+					<td>Id</td>
+					<td>Name</td>
+					<td>Description</td>
+					<td>Status</td>
+					<td>Price</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="product : ${productList}">
+					<td th:text="${product.id}"></td>
+					<td th:text="${product.name}"></td>
+					<td th:text="${product.description}"></td>
+					<td th:text="${product.statusDesc}"></td>
+					<td th:text="${product.prices}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

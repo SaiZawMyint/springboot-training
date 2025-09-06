@@ -33,6 +33,9 @@ dependencies {
 	implementation "mysql:mysql-connector-java:8.0.33"
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
 	implementation "org.springframework.boot:spring-boot-starter-thymeleaf:3.5.5"
+	// https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect
+	implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0"
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'

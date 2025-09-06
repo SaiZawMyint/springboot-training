@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Product Management System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/plugins/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome/css/all.min.css}">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --primary-color: #3b7ddd;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--light-bg);
+            border-right: 1px solid #dee2e6;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link {
+            color: #495057;
+            padding: 10px 15px;
+            border-left: 3px solid transparent;
+            margin-bottom: 2px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: #e9ecef;
+            border-left-color: var(--primary-color);
+        }
+        
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        
+        .sub-menu {
+            padding-left: 30px;
+        }
+        
+        .sub-menu .nav-link {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .product-table {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .status-badge {
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Fragment -->
+    <div th:replace="layouts/fragments/header :: header"></div>
+
+    <!-- Main Content Area with Sidebar -->
+    <div class="main-container">
+        <!-- Left Menu Fragment -->
+        <div th:replace="layouts/fragments/left-menu :: left-menu"></div>
+
+        <!-- Content Section -->
+        <main class="content">
+            <div layout:fragment="content"></div>
+        </main>
+    </div>
+
+    <!-- Footer Fragment -->
+    <div th:replace="layouts/fragments/footer :: footer"></div>
+
+    
+    <!-- Scripts -->
+    <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <div layout:fragment="scripts">
+    	<script>
+            $(document).ready(function() {
+                var currentPath = window.location.pathname;
+                
+                if (currentPath !== '/' && currentPath.endsWith('/')) {
+                    currentPath = currentPath.slice(0, -1);
+                }
+                
+                $('#leftMenu .nav-link').each(function() {
+                    var link = $(this);
+                    var linkPath = link.attr('href');
+                    
+                    if (linkPath !== '/' && linkPath.endsWith('/')) {
+                        linkPath = linkPath.slice(0, -1);
+                    }
+                    
+                    if (linkPath === currentPath) {
+                        link.addClass('active');
+                        
+                        if (link.parent().hasClass('sub-menu')) {
+                            link.closest('.collapse').addClass('show');
+                            link.closest('.collapse').prev('.dropdown-toggle').addClass('active');
+                        }
+                    }
+                });
+                
+                $('.dropdown-toggle').click(function() {
+                    $('.dropdown-toggle').not(this).removeClass('active');
+                    $(this).toggleClass('active');
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
