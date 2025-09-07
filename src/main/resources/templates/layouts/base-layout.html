@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/plugins/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
         :root {
             --sidebar-width: 250px;
@@ -89,12 +90,12 @@
 </head>
 <body>
     <!-- Header Fragment -->
-    <div th:replace="layouts/fragments/header :: header"></div>
+    <div th:replace="~{layouts/fragments/header :: header}"></div>
 
     <!-- Main Content Area with Sidebar -->
     <div class="main-container">
         <!-- Left Menu Fragment -->
-        <div th:replace="layouts/fragments/left-menu :: left-menu"></div>
+        <div th:replace="~{layouts/fragments/left-menu :: left-menu}"></div>
 
         <!-- Content Section -->
         <main class="content">
@@ -103,7 +104,7 @@
     </div>
 
     <!-- Footer Fragment -->
-    <div th:replace="layouts/fragments/footer :: footer"></div>
+    <div th:replace="~{layouts/fragments/footer :: footer}"></div>
 
     
     <!-- Scripts -->

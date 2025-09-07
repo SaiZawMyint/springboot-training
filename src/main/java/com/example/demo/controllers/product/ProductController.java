@@ -1,6 +1,7 @@
 package com.example.demo.controllers.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,29 +23,29 @@ public class ProductController {
 	@GetMapping("product-setup")
 	public String productSetupPage(Model model) {
 		model.addAttribute("productDTO", new ProductDTO());
-		return "products/product-setup";
+		return "pages/products/product-setup";
 	}
 
 	@GetMapping("product-list")
 	public String productListPage(Model model) {
 		model.addAttribute("productList", this.productService.getAllProductList());
-		return "products/product-list";
+		return "pages/products/product-list";
 	}
-	
-	//update
-	@GetMapping("/edit/{id}")
-    public String updateForm(@PathVariable("id") long id, Model model) {
-        ProductDTO productDTO = productService.getById(id);
-        model.addAttribute("productDTO", productDTO); // ✅ fixed
-        return "products/product-setup";
-    }
 
-	//delete
-   @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable(value = "id") Long id) {
-	  productService.deleteProduct(id);
-        return "redirect:/product-list";
-   }
+	// update
+	@GetMapping("/edit/{id}")
+	public String updateForm(@PathVariable("id") long id, Model model) {
+		ProductDTO productDTO = productService.getById(id);
+		model.addAttribute("productDTO", productDTO); // ✅ fixed
+		return "pages/products/product-setup";
+	}
+
+	// delete
+	@GetMapping("/delete/{id}")
+	public String deleteProduct(@PathVariable(value = "id") Long id) {
+		productService.deleteProduct(id);
+		return "redirect:/product-list";
+	}
 
 	@PostMapping("product-setup")
 	public String productSetupPost(@ModelAttribute ProductDTO productDTO, Model model, RedirectAttributes attr) {
