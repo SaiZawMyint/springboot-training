@@ -19,24 +19,24 @@ public class ProductController {
 	private ProductService productService;
 
 	/* GET Mappings */
-	@GetMapping("product-setup")
+	@GetMapping("/product-setup")
 	public String productSetupPage(Model model) {
 		model.addAttribute("productDTO", new ProductDTO());
-		return "products/product-setup";
+		return "pages/products/product-setup";
 	}
 
-	@GetMapping("product-list")
+	@GetMapping("/product-list")
 	public String productListPage(Model model) {
 		model.addAttribute("productList", this.productService.getAllProductList());
-		return "products/product-list";
+		return "pages/products/product-list";
 	}
-	
+
 	//update
 	@GetMapping("/edit/{id}")
     public String updateForm(@PathVariable("id") long id, Model model) {
         ProductDTO productDTO = productService.getById(id);
         model.addAttribute("productDTO", productDTO); // ✅ fixed
-        return "products/product-setup";
+        return "pages/products/product-setup";
     }
 
 	//delete
