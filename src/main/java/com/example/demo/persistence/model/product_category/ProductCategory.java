@@ -1,4 +1,4 @@
-package com.example.demo.persistence.model.role;
+package com.example.demo.persistence.model.product_category;
 
 import com.example.demo.persistence.model.BaseEntity;
 
@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "role")
+@Table(name = "product_category")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Role extends BaseEntity{
+public class ProductCategory extends BaseEntity{
 	private String name;
 	private String code;
+	private Integer sequence;
+	private Integer status;
 }

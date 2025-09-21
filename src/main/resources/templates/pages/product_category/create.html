@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base-layout}">
+<head>
+    <title>Create Product Category</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Create Product Category</h1>
+
+    <form th:action="@{/product-categories/create}" th:object="${productCategory}" method="post">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" th:field="*{name}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Code</label>
+            <input type="text" th:field="*{code}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Sequence</label>
+            <input type="number" th:field="*{sequence}" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select th:field="*{status}" class="form-control">
+                <option value="1">Active</option>
+                <option value="2">Inactive</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Save
+        </button>
+        <a th:href="@{/product-categories}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

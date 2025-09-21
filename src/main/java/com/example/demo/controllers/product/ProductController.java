@@ -12,17 +12,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dtos.product.ProductDTO;
 import com.example.demo.services.product.ProductService;
+import com.example.demo.services.product_category.ProductCategoryService;
 
 @Controller
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private ProductCategoryService categoryService;
 
 	/* GET Mappings */
 	@GetMapping("product-setup")
 	public String productSetupPage(Model model) {
 		model.addAttribute("productDTO", new ProductDTO());
+		model.addAttribute("categoryList", this.categoryService.getAllProductCategories());
 		return "pages/products/product-setup";
 	}
 
@@ -36,7 +41,8 @@ public class ProductController {
 	@GetMapping("/edit/{id}")
 	public String updateForm(@PathVariable("id") long id, Model model) {
 		ProductDTO productDTO = productService.getById(id);
-		model.addAttribute("productDTO", productDTO); // ✅ fixed
+		model.addAttribute("productDTO", productDTO);
+		model.addAttribute("categoryList", this.categoryService.getAllProductCategories());
 		return "pages/products/product-setup";
 	}
 

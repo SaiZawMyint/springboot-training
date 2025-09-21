@@ -1,31 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <th:block th:fragment="left-menu">
-        <aside class="sidebar">
-            <nav class="nav flex-column py-3"  id="leftMenu">
-                <a class="nav-link" href="/" th:href="@{/}">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
+<th:block th:fragment="left-menu">
+    <aside class="sidebar">
+        <nav class="nav flex-column py-3" id="leftMenu">
+            <a class="nav-link" href="/" th:href="@{/}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+
+            <!-- Product Menu -->
+            <div class="product-menu">
+                <a class="nav-link dropdown-toggle" data-toggle="collapse" href="#productSubmenu"
+                   role="button" aria-expanded="false" aria-controls="productSubmenu">
+                    <i class="fas fa-box"></i> Product
                 </a>
-                
-                <div class="product-menu">
-                    <a class="nav-link dropdown-toggle" data-toggle="collapse" href="#productSubmenu" 
-                       role="button" aria-expanded="false" aria-controls="productSubmenu">
-                        <i class="fas fa-box"></i> Product
+                <div class="collapse sub-menu" id="productSubmenu">
+                    <a class="nav-link" href="/product-setup" th:href="@{/product-setup}">
+                        <i class="fas fa-cog"></i> Product Setup
                     </a>
-                    <div class="collapse sub-menu" id="productSubmenu">
-                        <a class="nav-link" href="/product-setup" th:href="@{/product-setup}">
-                            <i class="fas fa-cog"></i> Product Setup
-                        </a>
-                        <a class="nav-link" href="/product-list" th:href="@{/product-list}">
-                            <i class="fas fa-list"></i> Product List
-                        </a>
-                    </div>
+                    <a class="nav-link" href="/product-list" th:href="@{/product-list}">
+                        <i class="fas fa-list"></i> Product List
+                    </a>
                 </div>
-                
-            </nav>
-        </aside>
-        
-    </th:block>
+            </div>
+
+            <!-- Product Category Menu -->
+            <div class="product-category-menu">
+                <a class="nav-link dropdown-toggle" data-toggle="collapse" href="#productCategorySubmenu"
+                   role="button" aria-expanded="false" aria-controls="productCategorySubmenu">
+                    <i class="fas fa-tags"></i> Product Category
+                </a>
+                <div class="collapse sub-menu" id="productCategorySubmenu">
+                    <a class="nav-link" href="/product-categories/create" th:href="@{/product-categories/create}">
+                        <i class="fas fa-cog"></i> Setup
+                    </a>
+                    <a class="nav-link" href="/product-categories" th:href="@{/product-categories}">
+                        <i class="fas fa-list"></i> List
+                    </a>
+                </div>
+            </div>
+
+        </nav>
+    </aside>
+</th:block>
 </body>
 </html>

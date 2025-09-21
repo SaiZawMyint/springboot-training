@@ -2,28 +2,28 @@ package com.example.demo.persistence.model.product;
 
 import java.math.BigDecimal;
 
+import com.example.demo.persistence.model.BaseEntity;
+import com.example.demo.persistence.model.product_category.ProductCategory;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "product")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Product {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+@Data
+@EqualsAndHashCode(callSuper =  true)
+public class Product extends BaseEntity{
+	
 	private String name;
 	private String description;
 	private Integer status;
 	private BigDecimal price;
+	
+	@ManyToOne
+	@JoinColumn(name = "product_category_id")
+	private ProductCategory productCategory;
 }

@@ -8,13 +8,18 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.product.ProductDTO;
 import com.example.demo.persistence.model.product.Product;
+import com.example.demo.persistence.model.product_category.ProductCategory;
 import com.example.demo.persistence.repositories.product.ProductRepository;
+import com.example.demo.persistence.repositories.product_category.ProductCategoryRepository;
 
 @Service
 public class ProductServiceImpl implements ProductService{
 
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private ProductCategoryRepository productCategoryRepository;
 
 	@Override
 	public ProductDTO saveProduct(ProductDTO productDTO) {
@@ -32,6 +37,13 @@ public class ProductServiceImpl implements ProductService{
 		product.setDescription(productDTO.getDescription());
 		product.setPrice(productDTO.getPrices());
 		product.setStatus(productDTO.getStatus());
+		
+		if(productDTO.getProductCategoryId() != null) {
+			ProductCategory productCategory = this.productCategoryRepository.findById(productDTO.getProductCategoryId())
+					.orElse(null);
+			
+			product.setProductCategory(productCategory);
+		}
 
 		Product saved = this.productRepository.save(product);
 

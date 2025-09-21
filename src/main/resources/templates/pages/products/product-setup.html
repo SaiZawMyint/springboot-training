@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html
-	xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/base-layout}">
 <head>
@@ -14,8 +13,8 @@
 			<form th:action="@{/product-setup}" th:object="${productDTO}"
 				method="post" class="needs-validation">
 
-		<input type="hidden" th:field="*{id}">
-		
+				<input type="hidden" th:field="*{id}">
+
 				<div class="mb-3">
 					<label for="name" class="form-label">Product Name</label> <input
 						type="text" th:field="*{name}" class="form-control" id="name"
@@ -42,6 +41,17 @@
 						type="number" step="0.01" th:field="*{prices}"
 						class="form-control" id="prices" placeholder="Enter price"
 						required>
+				</div>
+
+				<div class="mb-3">
+					<label for="productCategoryId" class="form-label">Product
+						Category</label> <select th:field="*{productCategoryId}"
+						class="form-control" id="productCategoryId" required>
+						<option value="" selected>Select Category</option>
+						<option th:each="category : ${categoryList}"
+							th:value="${category.id}" th:text="${category.name}"></option>
+					</select>
+
 				</div>
 
 				<button type="submit" class="btn btn-primary">Save Product</button>
