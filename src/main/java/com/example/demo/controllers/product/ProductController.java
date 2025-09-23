@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +15,14 @@ import com.example.demo.dtos.product.ProductDTO;
 import com.example.demo.services.product.ProductService;
 import com.example.demo.services.product_category.ProductCategoryService;
 
+import jakarta.validation.Valid;
+
 @Controller
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private ProductCategoryService categoryService;
 
@@ -54,8 +57,19 @@ public class ProductController {
 	}
 
 	@PostMapping("product-setup")
-	public String productSetupPost(@ModelAttribute ProductDTO productDTO, Model model, RedirectAttributes attr) {
-		ProductDTO saved = this.productService.saveProduct(productDTO);
+	public String productSetupPost(@ModelAttribute @Valid ProductDTO productDTO, BindingResult result, Model model,
+			RedirectAttributes attr) {
+//		ProductDTO saved = this.productService.saveProduct(productDTO);
+		try {
+			if (result.hasErrors()) {
+				model.addAttribute("errorMsg", "Please fill all required fields!");
+				return "pages/products/product-setup";
+			}
+		} catch (Exception e) {
+			model.addAttribute("errorMsg", e.getMessage());
+			return "pages/products/product-setup";
+		}
+
 		return "redirect:product-list";
 	}
 }

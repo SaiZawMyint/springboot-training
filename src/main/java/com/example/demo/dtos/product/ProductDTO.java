@@ -6,6 +6,10 @@ import com.example.demo.dtos.BaseDTO;
 import com.example.demo.dtos.product_category.ProductCategoryDTO;
 import com.example.demo.persistence.model.product.Product;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +21,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductDTO extends BaseDTO{
 
+	@NotBlank(message = "Name cannot be empty!")
 	private String name;
+	@NotBlank(message = "Description cannot be empty!")
 	private String description;
 	private Integer status; // 1,2
 	private String statusDesc; // 1 = Active, 2= inactive
+	
+	@NotNull
 	private BigDecimal prices;
 	
 	private ProductCategoryDTO productCategoryDTO;

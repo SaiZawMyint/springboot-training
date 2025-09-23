@@ -86,9 +86,24 @@
             font-weight: 700;
             border-radius: 0.25rem;
         }
+        .toast-container{
+        	position: fixed;
+        	top: 0;
+        	right: 0;
+        	z-index: 999;
+        }
+        .toast-message-container{
+        	margin: 10px;
+        	padding: 10px;
+        	border-radius: 5px;
+        	box-shadow: 1px 2px #0000004c;
+        	background: #fff;
+        	color: red;
+        }
     </style>
 </head>
 <body>
+
     <!-- Header Fragment -->
     <div th:replace="~{layouts/fragments/header :: header}"></div>
 
@@ -103,11 +118,14 @@
         </main>
     </div>
 
-    <!-- Footer Fragment -->
-    <div th:replace="~{layouts/fragments/footer :: footer}"></div>
+	<!-- Footer Fragment -->
+	<div th:replace="~{layouts/fragments/footer :: footer}"></div>
 
-    
-    <!-- Scripts -->
+	<div th:if="${!#strings.isEmpty(errorMsg)}" class="toast-container">
+		<div class="toast-message-container" th:text = "${errorMsg}"></div>
+	</div>
+
+	<!-- Scripts -->
     <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
     <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <div layout:fragment="scripts">
