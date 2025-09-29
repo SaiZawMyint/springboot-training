@@ -42,8 +42,9 @@ public class JwtService {
     @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
 
-    @Value("${app.jwt.refresh-expiration-ms}")
-    private long refreshExpirationMs;
+	/*
+	 * @Value("${app.jwt.refresh-expiration-ms}") private long refreshExpirationMs;
+	 */
 
     @Value("${app.jwt.issuer}")
     private String jwtIssuer;
@@ -68,9 +69,9 @@ public class JwtService {
     }
 
     // Generate refresh token from username/email
-    public String generateRefreshToken(String username) {
-        return buildToken(new HashMap<>(), username, refreshExpirationMs);
-    }
+//    public String generateRefreshToken(String username) {
+//        return buildToken(new HashMap<>(), username, refreshExpirationMs);
+//    }
 
     public String generateToken(Map<String, Object> extraClaims, String username) {
         return buildToken(extraClaims, username, jwtExpirationMs);
