@@ -76,4 +76,9 @@ public class ProductServiceImpl implements ProductService{
 
 	}
 
+	@Override
+	public boolean isNameAlreadyExit(String name, Long ignoreId) {
+		return (this.productRepository.getNameByIgnoreId(name, ignoreId) != null);
+	}
+
 }

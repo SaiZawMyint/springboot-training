@@ -59,17 +59,29 @@ public class ProductController {
 	@PostMapping("product-setup")
 	public String productSetupPost(@ModelAttribute @Valid ProductDTO productDTO, BindingResult result, Model model,
 			RedirectAttributes attr) {
-//		ProductDTO saved = this.productService.saveProduct(productDTO);
+//		
 		try {
+			validateRequest(productDTO, result);
 			if (result.hasErrors()) {
 				model.addAttribute("errorMsg", "Please fill all required fields!");
 				return "pages/products/product-setup";
 			}
+			
+			ProductDTO saved = this.productService.saveProduct(productDTO);
+			
 		} catch (Exception e) {
 			model.addAttribute("errorMsg", e.getMessage());
 			return "pages/products/product-setup";
 		}
 
 		return "redirect:product-list";
+	}
+
+	private void validateRequest(@Valid ProductDTO productDTO, BindingResult result) {
+		if(productDTO.getName() != null) {
+			if(this.productService.isNameAlreadyExit(productDTO.getName(), productDTO.getId())) {
+				result.rejectValue("name", "productDTO.name", "Name already used!");
+			}
+		}
 	}
 }

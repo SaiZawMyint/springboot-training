@@ -23,24 +23,24 @@ import com.example.demo.services.auth.AuthenticationService;
 public class SecurityConfig {
 
 	private final AuthenticationService authenticationService;
-	private final JwtAuthFilter jwtAuthFilter;
+//	private final JwtAuthFilter jwtAuthFilter;
 
-	public SecurityConfig(AuthenticationService authService, JwtAuthFilter jwtAuthFilter) {
+	public SecurityConfig(AuthenticationService authService) {
 		authenticationService = authService;
-		this.jwtAuthFilter = jwtAuthFilter;
+//		this.jwtAuthFilter = jwtAuthFilter;
 	}
 
-	@Bean
-	@Order(1)
-	public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-		http.securityMatcher("/api/**").csrf(csrf -> csrf.disable())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-				.authenticationProvider(authenticationProvider())
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-		return http.build();
-	}
+//	@Bean
+//	@Order(1)
+//	public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+//		http.securityMatcher("/api/**").csrf(csrf -> csrf.disable())
+//				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//				.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+//				.authenticationProvider(authenticationProvider())
+//				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//		return http.build();
+//	}
 
 	@Bean
 	@Order(2)
