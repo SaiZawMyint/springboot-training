@@ -10,10 +10,10 @@ public interface UserService {
 	UserDto saveUser(UserDto userDTO);
 
 	List<UserDto> getAllUserList();
-	
+
 	// update
 	UserDto getById(Long id);
-	
+
 	// delete
 	void deleteUser(long id);
 }

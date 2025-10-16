@@ -1,8 +1,11 @@
 package com.example.demo.dtos.user;
 
+import com.example.demo.dtos.BaseDTO;
 import com.example.demo.persistence.model.role.Role;
 import com.example.demo.persistence.model.user.User;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +16,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class UserDto {
+public class UserDto extends BaseDTO{
 	private Long id;
+	@NotBlank(message = "Username is required")
 	private String username;
+
+	@NotBlank(message = "Email is required")
 	private String email;
+
+	@NotBlank(message = "Password is required")
+    @Size(min = 8, max = 20, message = "Password must be 8-20 characters")
 	private String password;
 	private Role role_id;
 	public UserDto(User user) {
@@ -26,6 +35,8 @@ public class UserDto {
 			this.email = user.getEmail();
 			this.password = user.getPassword();
 			this.role_id = user.getRole_id();
+
+			setCommonField(user);
 		}
 
 	}

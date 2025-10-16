@@ -32,15 +32,22 @@ public class DeploymentHandler {
 		if((roles == null || roles.isEmpty()) && (users == null || users.isEmpty())) {
 			// set new row
 			Role adminRole = new Role();
-			adminRole.setName("Admin");
-			adminRole.setCode("ROLE_ADMIN");
+			//adminRole.setName("Admin");
+			//adminRole.setCode("ROLE_ADMIN");
+			adminRole.setName("ROLE_ADMIN");
+			adminRole.setCode("02");
 
 			Role admin = roleRepository.save(adminRole);
 
 			User user = new User();
-			user.setUsername("Admin");
-			user.setEmail("admin@gmail.com");
-			user.setPassword(passwordEncoder.encode("123456"));
+			/*
+			 * user.setUsername("Admin"); user.setEmail("admin@gmail.com");
+			 * user.setPassword(passwordEncoder.encode("123456"));
+			 */
+
+			user.setUsername("Phyo");
+			user.setEmail("phyo@gmail.com");
+			user.setPassword(passwordEncoder.encode("12345678"));
 			user.setRole_id(admin);
 			userRepository.save(user);
 		}

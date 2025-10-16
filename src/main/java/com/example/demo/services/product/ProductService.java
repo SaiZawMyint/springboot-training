@@ -6,7 +6,7 @@ import com.example.demo.dtos.product.ProductDTO;
 
 public interface ProductService {
 	// save
-	ProductDTO saveProduct(ProductDTO productDTO);
+	ProductDTO saveProduct(ProductDTO productDTO) throws Exception;
 
 	// list
 	List<ProductDTO> getAllProductList();

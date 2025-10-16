@@ -12,7 +12,7 @@ import com.example.demo.persistence.repositories.role.RoleRepository;
 
 @Service
 public class RoleServiceImpl implements RoleService {
-	
+
 	@Autowired
 	private RoleRepository roleRepository;
 
@@ -22,12 +22,12 @@ public class RoleServiceImpl implements RoleService {
 		role = new Role();
 		role.setRole_id(roleDTO.getId());
 		role.setName(roleDTO.getName());
-		role.setCode(roleDTO.getCode());
-		
+		role.setCode(roleDTO.getCode().toUpperCase()); //to add ADMIN_, to change uppder case
+
 		Role savedRole = this.roleRepository.save(role);
 		return new RoleDto(savedRole);
 	}
-	
+
 	@Override
 	public List<RoleDto> getAllRoleList() {
 		List<Role> dataList = this.roleRepository.findAll();

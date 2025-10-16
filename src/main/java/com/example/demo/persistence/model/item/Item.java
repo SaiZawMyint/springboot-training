@@ -1,10 +1,9 @@
 package com.example.demo.persistence.model.item;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
+import com.example.demo.persistence.model.BaseEntity;
 import com.example.demo.persistence.model.product.Product;
-import com.example.demo.persistence.model.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,11 +24,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Item {
-	
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//@EqualsAndHashCode(callSuper =  true)
+public class Item extends BaseEntity {
 
     private String name;
 
@@ -46,15 +42,17 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-    
-    @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false)
-    private User createdBy;   // Many items created by one user
 
-    @Column(name = "created_at")
+	/*
+	 * @ManyToOne
+	 *
+	 * @JoinColumn(name = "created_by", nullable = false) private User createdBy;
+	 */ // Many items created by one user
+
+  /*@Column(name = "created_at")
     private Date createdAt;
 
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private Date updatedAt;*/
 
 }

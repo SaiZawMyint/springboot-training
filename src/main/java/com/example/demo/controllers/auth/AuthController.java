@@ -12,6 +12,6 @@ public class AuthController {
 
 	@GetMapping("/")
     public String indexPage() {
-        return "/layouts/fragments/layout"; // layout.html
+        return "/layouts/base-layout"; // layout.html
     }
 }

@@ -18,4 +18,6 @@ public interface ItemService {
 
 	// delete
 	void deleteItem(long id);
+
+	boolean isNameAlreadyExit(String name, Long ignoreId);
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/base-layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Add Product Category</title>
+	<link rel="stylesheet" th:href="@{/plugins/bootstrap/css/bootstrap.min.css}">
+</head>
+
+<body>
+	<main layout:fragment="content">
+		<div class="container-fluid">
+			<div class="card">
+				<div class="card-body">
+					<h1 class="mb-4">Add Product Category</h1>
+
+					<form th:action="@{/productcategory-setup}" th:object="${pdtCategoryDTO}" method="post"
+						class="needs-validation">
+
+						<input type="hidden" th:field="*{id}">
+
+						<div class="mb-3">
+							<label for="code" class="form-label">Code</label>
+							<input type="text" th:field="*{code}" class="form-control" id="name"
+								placeholder="Enter product name">
+							<span th:if="${#fields.hasErrors('code')}" th:errorClass="text-danger" th:errors="*{code}"></span>
+						</div>
+
+						<div class="mb-3">
+							<label for="name" class="form-label">Product Category Name</label>
+							<input type="text" th:field="*{name}" class="form-control" id="name"
+								placeholder="Enter product name">
+								<span th:if="${#fields.hasErrors('name')}" th:errorClass="text-danger" th:errors="*{name}"></span>
+						</div>
+
+						<button type="submit" class="btn btn-primary">Save Product</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

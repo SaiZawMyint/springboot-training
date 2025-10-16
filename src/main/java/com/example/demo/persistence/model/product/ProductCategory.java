@@ -1,12 +1,16 @@
 package com.example.demo.persistence.model.product;
 
-import java.util.Date;
 import java.util.List;
-import com.example.demo.persistence.model.user.User;
 
-import jakarta.persistence.*;
+import com.example.demo.persistence.model.BaseEntity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,11 +21,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCategory {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EqualsAndHashCode(callSuper =  true)
+public class ProductCategory extends BaseEntity {
 
     private String name;
     private String code;
@@ -29,16 +30,8 @@ public class ProductCategory {
     @Column(name = "image_url")
     private String imageUrl; // store image path or URL
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Product> products; // one category has many products
-
-    @ManyToOne
-    @JoinColumn(name = "created_by", nullable = true)
-    private User createdBy; // many categories created by one user
-
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "updated_at")
-    private Date updatedAt;
+	/*
+	 * @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval =
+	 * true) private List<Product> products;
+	 */
 }

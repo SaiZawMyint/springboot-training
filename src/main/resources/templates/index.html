@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/base-layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<h1>Demo Project</h1>
+		<a th:href="@{/product-setup}">Product Setup</a> <br> <a
+			th:href="@{/product-list}">Product List</a>
+
+	</div>
+</body>
+</html>

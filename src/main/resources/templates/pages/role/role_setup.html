@@ -10,7 +10,7 @@
 </head>
 
 <body>
-	<divmain layout:fragment="content">
+	<main layout:fragment="content">
 		<div class="container-fluid">
 			<div class="card">
 				<div class="card-body">
@@ -23,19 +23,22 @@
 
 						<div class="mb-3">
 							<label for="name" class="form-label">Role</label>
-							<input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter Name" required>
+							<input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter Name">
+							<span th:if="${#fields.hasErrors('name')}" th:errorClass="text-danger"
+															th:errors="*{name}"></span>
 						</div>
 
 						<div class="mb-3">
 							<label for="code" class="form-label">Code</label>
-							<input type="text" th:field="*{code}" class="form-control" id="name" placeholder="Enter Code." required>
+							<input type="text" th:field="*{code}" class="form-control" id="name" placeholder="Enter Code.">
+							<span th:if="${#fields.hasErrors('code')}" th:errorClass="text-danger"
+															th:errors="*{code}"></span>
 						</div>
 
 						<button type="submit" class="btn btn-primary">Save</button>
 					</form>
 				</div>
 			</div>
-		</div>
 		</div>
 		</main>
 </body>

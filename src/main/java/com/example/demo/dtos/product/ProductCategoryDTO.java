@@ -1,9 +1,9 @@
 package com.example.demo.dtos.product;
 
-import java.util.Date;
-
+import com.example.demo.dtos.BaseDTO;
 import com.example.demo.persistence.model.product.ProductCategory;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,25 +13,23 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCategoryDTO {
+public class ProductCategoryDTO extends BaseDTO{
 
-    private Long id;
+
+    @NotBlank(message = "Name cannot be empty!")
     private String name;
+
+    @NotBlank(message = "Code cannot be empty!")
     private String code;
     private String imageUrl;
-    private Long createdById; // ID of the user who created
-    private Date createdAt;
-    private Date updatedAt;
+
 
     public ProductCategoryDTO(ProductCategory category) {
         if(category != null) {
-            this.id = category.getId();
             this.name = category.getName();
             this.code = category.getCode();
             this.imageUrl = category.getImageUrl();
-            this.createdById = category.getCreatedBy() != null ? category.getCreatedBy().getId() : null;
-            this.createdAt = category.getCreatedAt();
-            this.updatedAt = category.getUpdatedAt();
+            setCommonField(category);
         }
     }
 }
