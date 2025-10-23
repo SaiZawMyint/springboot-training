@@ -48,7 +48,7 @@ public class AuthAPIController {
 		}catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 		
