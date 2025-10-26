@@ -56,22 +56,49 @@ public class ProductController {
 		return "redirect:/product-list";
 	}
 
-	 @PostMapping("/product-setup") // ✅ added leading slash
-    public String productSetupPost(@ModelAttribute("productDTO") @Valid ProductDTO productDTO,
-                                   BindingResult result,
-                                   Model model,
-                                   RedirectAttributes attr) {
+	@PostMapping("/product-setup")
+	public String productSetupPost(
+	        @Valid @ModelAttribute("productDTO") ProductDTO productDTO,
+	        BindingResult result,
+	        Model model,
+	        RedirectAttributes attr) {
 
-        try {
-            // ✅ Save the product to the database
-            productService.saveProduct(productDTO);
-            attr.addFlashAttribute("successMsg", "Product saved successfully!");
-            return "redirect:/product-list";
-        } catch (Exception e) {
-        	e.printStackTrace();
-            model.addAttribute("categoryList", categoryService.getAllProductCategoryList());
-            model.addAttribute("errorMsg", "Error while saving product: " + e.getMessage());
-            return "pages/products/product-setup";
-        }
-    }
+	    // 1. Custom validation
+	    validateRequest(productDTO, result);
+
+	    // 2. Check validation errors
+	    if (result.hasErrors()) {
+	        model.addAttribute("categoryList", categoryService.getAllProductCategoryList());
+	        model.addAttribute("errorMsg", "Please fill all required fields!");
+	        return "pages/products/product-setup";
+	    }
+
+	    try {
+	        // 3. Ensure categoryId is provided
+	        if (productDTO.getProductCategoryId() == null) {
+	            model.addAttribute("categoryList", categoryService.getAllProductCategoryList());
+	            model.addAttribute("errorMsg", "Please select a product category!"); //to ask
+	            return "pages/products/product-setup";
+	        }
+
+	        // 4. Save product
+	        productService.saveProduct(productDTO);
+	        attr.addFlashAttribute("successMsg", "Product saved successfully!");
+	        return "redirect:/product-list";
+
+	    } catch (Exception e) {
+	        model.addAttribute("categoryList", categoryService.getAllProductCategoryList());
+	        model.addAttribute("errorMsg", "Error saving product: " + e.getMessage());
+	        return "pages/products/product-setup";
+	    }
+	}
+
+
+	 private void validateRequest(@Valid ProductDTO productDTO, BindingResult result) {
+			if(productDTO.getName() != null) {
+				if(this.productService.isNameAlreadyExit(productDTO.getName(), productDTO.getId())) {
+					result.rejectValue("name", "productDTO.name", "Name already used!");
+				}
+			}
+		}
 }

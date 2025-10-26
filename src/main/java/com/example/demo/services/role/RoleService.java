@@ -17,4 +17,6 @@ public interface RoleService {
 	// delete
 	void deleteRole(long id);
 
+	boolean isNameAlreadyExit(String name, Long ignoreId);
+
 }

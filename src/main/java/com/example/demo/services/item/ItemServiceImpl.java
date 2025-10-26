@@ -1,7 +1,6 @@
 package com.example.demo.services.item;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class ItemServiceImpl implements ItemService{
 					.orElseThrow(() -> new RuntimeException("Item not found"));
 		} else {
 			item = new Item();
-			item.setCreatedAt(new Date());
+
 		}
 
 	    item.setName(itemDto.getName());
@@ -49,34 +48,24 @@ public class ItemServiceImpl implements ItemService{
 	    item.setOriginalPrice(itemDto.getOriginalPrice());
 	    item.setQuantity(itemDto.getQuantity());
 	    item.setStatus(itemDto.getStatus());
+	    if (itemDto.getProduct() != null) {
+	    	Product product = this.productRepository.findById(itemDto.getProduct())
+	                .orElse(null);
 
-	    // Resolve product by ID
-	    if (itemDto.getProduct() == null) {
-	        throw new IllegalArgumentException("Product cannot be null!");
+	        if (product == null) {
+	            throw new RuntimeException(
+	                "Invalid product ID: " + itemDto.getProduct() + ". Please select a valid product.");
+	        }
+
+	        item.setProduct(product);
+
+	    } else {
+	        throw new RuntimeException("Product category ID is required.");
 	    }
 
+	    User currentUser = authenticationService.getCurrentUser();
+	    item.setCreatedBy(currentUser);
 
-	    	 Product product = this.productRepository.findById(itemDto.getProduct())
-	 	            .orElse(null);
-	    	 //System.out.println("product id= " + product.getId());
-	    	 //System.out.println("product name= " + product.getName());
-	    	 item.setProduct(product);
-
-
-	    // Set timestamps
-	  /*  Date now = new Date();
-	    item.setCreatedAt(now);
-	    item.setUpdatedAt(now);*/
-
-		/* User user = userRepository.findById(itemDto.getCreatedBy()) .orElseThrow(()
-		 -> new RuntimeException("User not found"));*/
-
-		// item.setCreatedBy(user);
-
-		/*
-		 * // ✅ Fix: set createdBy User currentUser = userRepository.getById(null); //
-		 * however you manage login item.setCreatedBy(currentUser);
-		 */
 	    Item saved = this.itemRepository.save(item);
 
 	    return new ItemDTO(saved);

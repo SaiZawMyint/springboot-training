@@ -48,7 +48,7 @@ public class DeploymentHandler {
 			user.setUsername("Phyo");
 			user.setEmail("phyo@gmail.com");
 			user.setPassword(passwordEncoder.encode("12345678"));
-			user.setRole_id(admin);
+			user.setRole(admin);
 			userRepository.save(user);
 		}
 	}

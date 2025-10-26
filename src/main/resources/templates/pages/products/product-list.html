@@ -36,7 +36,8 @@
 								<td th:text="${product.statusDesc}"></td>
 								<td th:text="${product.price}"></td>
 
-								<td th:text="${product.categoryName}"></td>
+								<td th:text="${product.productCategoryDTO.name}"></td>
+								
 								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<td class="upd-btn"><a th:href="@{/edit/{id}(id=${product.id})}"
 										class="updt-link">Update</a></td>

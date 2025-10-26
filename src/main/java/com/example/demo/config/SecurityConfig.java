@@ -2,14 +2,17 @@ package com.example.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.demo.services.auth.AuthenticationService;
 
@@ -17,24 +20,40 @@ import com.example.demo.services.auth.AuthenticationService;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-	private final AuthenticationService authenticationService;
 
-	public SecurityConfig(AuthenticationService authService) {
+	private final AuthenticationService authenticationService;
+	 private final JwtAuthFilter jwtAuthFilter;
+
+	public SecurityConfig(AuthenticationService authService, JwtAuthFilter jwtAuthFilter) {
 		authenticationService = authService;
+		 this.jwtAuthFilter = jwtAuthFilter;
 	}
 
 	@Bean
+	@Order(1)
+	public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+		http.securityMatcher("/api/**").csrf(csrf -> csrf.disable())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+				.authenticationProvider(authenticationProvider())
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+	return http.build();
+	}
+
+	@Bean
+	@Order(2)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 		// System.out.println(passwordEncoder().encode("12345678"));
 
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers("/login", "/error", "/css/**", "/js/**", "/plugins/**").permitAll()
+						.requestMatchers("/login", "/error", "/css/**", "/js/**", "/plugins/**", "/api/**").permitAll()
 
 						// Product setup page -> only ADMIN
 
-						/*  .requestMatchers(HttpMethod.GET,"/product-setup").hasRole("ADMIN")
+						/* .requestMatchers(HttpMethod.GET,"/product-setup").hasRole("ADMIN")
 						 .requestMatchers(HttpMethod.POST, "/porduct-setup").hasAnyRole("ADMIN",
 						 "MANAGER")
 

@@ -5,11 +5,9 @@ import java.math.BigDecimal;
 import com.example.demo.persistence.model.BaseEntity;
 import com.example.demo.persistence.model.product.Product;
 
+import groovy.transform.EqualsAndHashCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -24,10 +22,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@EqualsAndHashCode(callSuper =  true)
-public class Item extends BaseEntity {
+@EqualsAndHashCode(callSuper =  true)
 
-    private String name;
+public class Item extends BaseEntity{
+
+	private String name;
 
     @Column(name = "sell_price")
     private BigDecimal sellPrice;
@@ -40,19 +39,7 @@ public class Item extends BaseEntity {
     private Integer status;   // 1 = Active, 2 = Inactive
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
-
-	/*
-	 * @ManyToOne
-	 *
-	 * @JoinColumn(name = "created_by", nullable = false) private User createdBy;
-	 */ // Many items created by one user
-
-  /*@Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "updated_at")
-    private Date updatedAt;*/
 
 }

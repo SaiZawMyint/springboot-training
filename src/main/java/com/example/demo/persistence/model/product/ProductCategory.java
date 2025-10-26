@@ -3,26 +3,21 @@ package com.example.demo.persistence.model.product;
 import java.util.List;
 
 import com.example.demo.persistence.model.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Entity
-@Table(name = "product_category") // use underscore for table name
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "product_category")
+@Data
 @EqualsAndHashCode(callSuper =  true)
-public class ProductCategory extends BaseEntity {
+public class ProductCategory extends BaseEntity{
 
     private String name;
     private String code;
@@ -30,8 +25,7 @@ public class ProductCategory extends BaseEntity {
     @Column(name = "image_url")
     private String imageUrl; // store image path or URL
 
-	/*
-	 * @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval =
-	 * true) private List<Product> products;
-	 */
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category")
+    private List<Product> product;
 }

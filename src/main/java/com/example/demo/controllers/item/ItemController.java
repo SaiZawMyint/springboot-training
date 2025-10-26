@@ -61,10 +61,12 @@ public class ItemController {
 		try {
 
 			validateRequest(itemDTO, result);
+
 			if (result.hasErrors()) {
 				model.addAttribute("errorMsg", "Please fill all required fields!");
 				return "pages/item/item-setup";
 			}
+
 			itemService.saveItem(itemDTO);
 			attr.addFlashAttribute("successMsg", "Item saved successfully!");
 			return "redirect:/item-list";
@@ -77,9 +79,9 @@ public class ItemController {
 
 	private void validateRequest(@Valid ItemDTO itemDTO, BindingResult result) {
 
-		if(itemDTO.getName() != null) {
-			if(this.itemService.isNameAlreadyExit(itemDTO.getName(), itemDTO.getId())) {
-				result.rejectValue("name", "productDTO.name", "Name already used!");
+		if (itemDTO.getName() != null) {
+			if (this.itemService.isNameAlreadyExit(itemDTO.getName(), itemDTO.getId())) {
+				result.rejectValue("name", "itemDTO.name", "Name already used!");
 			}
 		}
 	}

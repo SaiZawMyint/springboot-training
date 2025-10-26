@@ -13,23 +13,22 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCategoryDTO extends BaseDTO{
+public class ProductCategoryDTO extends BaseDTO {
 
+	@NotBlank(message = "Name cannot be empty!")
+	private String name;
 
-    @NotBlank(message = "Name cannot be empty!")
-    private String name;
+	@NotBlank(message = "Code cannot be empty!")
+	private String code;
 
-    @NotBlank(message = "Code cannot be empty!")
-    private String code;
-    private String imageUrl;
+	private String imageUrl;
 
-
-    public ProductCategoryDTO(ProductCategory category) {
-        if(category != null) {
-            this.name = category.getName();
-            this.code = category.getCode();
-            this.imageUrl = category.getImageUrl();
-            setCommonField(category);
-        }
-    }
+	public ProductCategoryDTO(ProductCategory category) {
+		if (category != null) {
+			this.name = category.getName();
+			this.code = category.getCode();
+			this.imageUrl = category.getImageUrl();
+			setCommonField(category);
+		}
+	}
 }

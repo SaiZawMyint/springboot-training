@@ -17,4 +17,6 @@ public interface ProductCategoryService {
 
 		// delete
 		void deleteProductCategory(long id);
+
+		boolean isNameAlreadyExit(String name, Long ignoreId);
 }

@@ -29,7 +29,7 @@ public class AuthenticationService implements UserDetailsService {
 		User user = userRepository.findByEmail(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-		Role role = user.getRole_id();
+		Role role = user.getRole();
 
 		List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(role.getCode()));
 

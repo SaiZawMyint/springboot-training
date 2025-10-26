@@ -1,6 +1,5 @@
 package com.example.demo.services.product;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +24,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Autowired
     private AuthenticationService authenticationService;
 
+    //save
 	@Override
 	public ProductCategoryDTO saveProductCategory(ProductCategoryDTO productCategoryDTO) {
 		ProductCategory pdtCategory;
@@ -40,16 +40,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
 		pdtCategory.setName(productCategoryDTO.getName());
 		pdtCategory.setCode(productCategoryDTO.getCode());
-		pdtCategory.setCreatedAt(new Date());
-		pdtCategory.setImageUrl(productCategoryDTO.getImageUrl());
-		pdtCategory.setUpdatedAt(new Date());
 
-		// Set creator (user)
-	/*	if (productCategoryDTO.getCreatedById() != null) {
-			User user = userRepository.findById(productCategoryDTO.getCreatedById())
-					.orElseThrow(() -> new RuntimeException("User not found"));
-			pdtCategory.setCreatedBy(user);
-		}*/
+		pdtCategory.setImageUrl(productCategoryDTO.getImageUrl());
+
 
 		  User currentUser = authenticationService.getCurrentUser();
 		  pdtCategory.setCreatedBy(currentUser);
@@ -60,13 +53,18 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
 	@Override
 	public List<ProductCategoryDTO> getAllProductCategoryList() {
-		List<ProductCategory> dataList = this.productCategoryRepository.findAll();
+		/*List<ProductCategory> dataList = this.productCategoryRepository.findAll();
 
 		if (dataList != null && !dataList.isEmpty()) {
 			return dataList.stream().map(ProductCategoryDTO::new).toList();
 		}
 
-		return Collections.emptyList();
+		return Collections.emptyList();*/
+
+		  return productCategoryRepository.findAll()
+	                .stream()
+	                .map(ProductCategoryDTO::new)
+	                .toList();
 	}
 
 	@Override
@@ -78,8 +76,19 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 		return new ProductCategoryDTO(pdtCategory);
 	}
 
+
 	@Override
 	public void deleteProductCategory(long id) {
+		if (!productCategoryRepository.existsById(id)) {
+            throw new RuntimeException("Product category not found with id: " + id);
+        }
 		productCategoryRepository.deleteById(id);
 
-	}}
+	}
+
+	@Override
+	public boolean isNameAlreadyExit(String name, Long ignoreId) {
+		return (this.productCategoryRepository.getNameByIgnoreId(name, ignoreId) != null);
+	}
+}
+

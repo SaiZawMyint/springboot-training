@@ -16,4 +16,6 @@ public interface UserService {
 
 	// delete
 	void deleteUser(long id);
+
+	boolean isNameAlreadyExit(String username, Long ignoreId);
 }

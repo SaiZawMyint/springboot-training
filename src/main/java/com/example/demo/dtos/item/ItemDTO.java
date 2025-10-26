@@ -3,6 +3,7 @@ package com.example.demo.dtos.item;
 import java.math.BigDecimal;
 
 import com.example.demo.dtos.BaseDTO;
+import com.example.demo.dtos.product.ProductDTO;
 import com.example.demo.persistence.model.item.Item;
 
 import jakarta.validation.constraints.NotBlank;
@@ -33,23 +34,28 @@ public class ItemDTO extends BaseDTO{
 	private Integer status; // 1 = Active, 2 = Inactive
 	private String statusDesc;
 
-	@NotNull(message = "pdt cannot be empty!")
+	private ProductDTO productDTO;
 	private Long product;
-
-	@NotBlank(message = "Product Name cannot be empty!")
-	private String productName;
 
 	public ItemDTO(Item item) {
 		if (item != null) {
-		//	this.id = item.getId();
 			this.name = item.getName();
 			this.sellPrice = item.getSellPrice();
 			this.originalPrice = item.getOriginalPrice();
 			this.quantity = item.getQuantity();
 			this.status = item.getStatus();
-			this.product = (item.getProduct() != null ? item.getProduct().getId() : null);
-			this.productName=(item.getProduct() != null ? item.getProduct().getName() : null);
+
 			this.statusDesc = status != null && status.equals(1) ? "Active" : "Inactive";
+
+			if(item.getProduct() != null) {
+				this.productDTO = new ProductDTO(item.getProduct());
+				this.product = productDTO.getId();
+			}
+
+
+			//this.product = (item.getProduct() != null ? item.getProduct().getId() : null);
+			//this.productName=(item.getProduct() != null ? item.getProduct().getName() : null);
+
 			//call common method
 			setCommonField(item);
 		}

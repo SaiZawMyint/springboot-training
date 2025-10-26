@@ -8,47 +8,56 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.user.UserDto;
+import com.example.demo.persistence.model.role.Role;
 import com.example.demo.persistence.model.user.User;
+import com.example.demo.persistence.repositories.role.RoleRepository;
 import com.example.demo.persistence.repositories.user.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDto saveUser(UserDto userDTO) {
-	    User user;
+		User user;
 
-	    if (userDTO.getId() != null) {
-	        // Updating existing user
-	        user = userRepository.findById(userDTO.getId())
-	                             .orElseThrow(() -> new RuntimeException("User not found"));
+		if (userDTO.getId() != null) {
+			// Updating existing user
+			user = userRepository.findById(userDTO.getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-	        user.setUsername(userDTO.getUsername());
-	        user.setEmail(userDTO.getEmail());
+			 if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
+		            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+		        }
+			 System.out.println("existing user"+ user.getPassword());
+		} else {
+			// New user
+			user = new User();
 
-	        if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
-	            // Encode new password only if user entered one
-	            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-	        }
-	        // else → keep old password
-	    } else {
-	        // New user
-	        user = new User();
-	        user.setUsername(userDTO.getUsername());
-	        user.setEmail(userDTO.getEmail());
+			 if (userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
+		            throw new IllegalArgumentException("Password is required for new user");
+		        }
+		        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-	        if (userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
-	            throw new IllegalArgumentException("Password is required for new user");
-	        }
-	        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-	    }
+		        System.out.println("new user"+ user.getPassword());
 
-	    User savedUser = this.userRepository.save(user);
-	    return new UserDto(savedUser);
+		}
+
+		user.setUsername(userDTO.getUsername());
+		user.setEmail(userDTO.getEmail());
+
+
+		Role role = roleRepository.findById(userDTO.getRoleId()).orElse(null);
+
+		user.setRole(role);
+		User savedUser = this.userRepository.save(user);
+		return new UserDto(savedUser);
 	}
 
 	@Override
@@ -64,14 +73,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto getById(Long id) {
 		User user = userRepository.findById(id)
-		            .orElseThrow(() -> new RuntimeException("User not found for id : " + id));
+				.orElseThrow(() -> new RuntimeException("User not found for id : " + id));
 
-		    return new UserDto(user);
+		return new UserDto(user);
 	}
 
 	@Override
 	public void deleteUser(long id) {
 		userRepository.deleteById(id);
+	}
+
+	@Override
+	public boolean isNameAlreadyExit(String username, Long ignoreId) {
+		return (this.userRepository.getNameByIgnoreId(username, ignoreId) != null);
 	}
 
 }

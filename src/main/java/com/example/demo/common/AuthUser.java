@@ -21,7 +21,7 @@ public class AuthUser implements  org.springframework.security.core.userdetails.
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return List.of(new SimpleGrantedAuthority(user.getRole_id().getCode()));
+		return List.of(new SimpleGrantedAuthority(user.getRole().getCode()));
 	} //to ask
 
 	@Override

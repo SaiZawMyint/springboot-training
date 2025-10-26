@@ -29,7 +29,7 @@ public class BaseEntity {
 	private Date createdAt;
 
 	@ManyToOne
-	@JoinColumn(name = "created_by", nullable = false, updatable = false)
+	@JoinColumn(name = "created_by")
 	private User createdBy;
 
 	@Column(name = "updated_at")

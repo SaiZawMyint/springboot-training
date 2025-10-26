@@ -28,46 +28,56 @@ public class RoleController {
 		return "pages/role/role_setup";
 	}
 
-	//get
+	// get
 	@GetMapping("/role_list")
 	public String roleListPage(Model model) {
 		model.addAttribute("roleList", this.roleService.getAllRoleList());
 		return "pages/role/role_list";
 	}
 
-	//update
+	// update
 	@GetMapping("/role/edit/{id}")
 	public String updateRole(@PathVariable("id") long id, Model model) {
 		RoleDto roleDTO = this.roleService.getById(id);
-	    model.addAttribute("roleDTO", roleDTO);
-	    return "pages/role/role_setup";
+		model.addAttribute("roleDTO", roleDTO);
+		return "pages/role/role_setup";
 	}
 
-	//delete
-   @GetMapping("/role/delete/{id}")
-    public String deleteRole(@PathVariable(value = "id") Long id) {
-	   roleService.deleteRole(id);
-        return "redirect:/role_list";
-   }
+	// delete
+	@GetMapping("/role/delete/{id}")
+	public String deleteRole(@PathVariable(value = "id") Long id) {
+		roleService.deleteRole(id);
+		return "redirect:/role_list";
+	}
 
-   /* Save */
+	/* Save */
 	@PostMapping("/role_setup")
-	public String saveRoleInfo(@ModelAttribute ("roleDTO")  @Valid RoleDto roleDTO, BindingResult result, Model model, RedirectAttributes attr) {
+	public String saveRoleInfo(@ModelAttribute("roleDTO") @Valid RoleDto roleDTO, BindingResult result, Model model,
+			RedirectAttributes attr) {
 		try {
-			/*
-			 * if(result.hasErrors()) { model.addAttribute("errorMsg",
-			 * "Please fill all required fields!"); return "pages/role/role_setup"; }
-			 */
+			validateRequest(roleDTO, result);
+
+			if (result.hasErrors()) {
+				model.addAttribute("errorMsg", "Please fill all required fields!");
+				return "pages/role/role_setup";
+			}
 
 			RoleDto saved = this.roleService.saveRole(roleDTO); // (no need to add model)
-			 attr.addFlashAttribute("successMsg", "Product saved successfully!");
+			attr.addFlashAttribute("successMsg", "Product saved successfully!");
 			return "redirect:/role_list";
-		}catch(Exception e) {
+		} catch (Exception e) {
 			model.addAttribute("errorMsg", e.getMessage());
-			 return "pages/role/role_setup";
+			return "pages/role/role_setup";
 		}
 
+	}
 
+	private void validateRequest(@Valid RoleDto roleDTO, BindingResult result) {
+		if (roleDTO.getName() != null) {
+			if (this.roleService.isNameAlreadyExit(roleDTO.getName(), roleDTO.getId())) {
+				result.rejectValue("name", "roleDTO.name", "Name already used!");
+			}
+		}
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.example.demo.services.product;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,7 @@ public class ProductServiceImpl implements ProductService {
 	private UserRepository userRepository;
 
 	@Autowired
-    private AuthenticationService authenticationService;
-
+	private AuthenticationService authenticationService;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -47,21 +45,33 @@ public class ProductServiceImpl implements ProductService {
 					.orElseThrow(() -> new RuntimeException("Product not found"));
 		} else {
 			product = new Product();
-			product.setCreatedAt(new Date());
+
 		}
 
 		product.setName(productDTO.getName());
 		product.setDescription(productDTO.getDescription());
 		product.setPrice(productDTO.getPrice());
 		product.setStatus(productDTO.getStatus());
-		product.setUpdatedAt(new Date());
+		// product.setUpdatedAt(new Date());
 
-		ProductCategory category = productCategoryRepository.findById(productDTO.getProductCategoryId()).orElseThrow(()->new Exception("Product category not found!"));
-	    
-	    product.setCategory(category);
+		/*if (productDTO.getProductCategoryId() != null) {
+			ProductCategory productCategory = productCategoryRepository.findById(productDTO.getProductCategoryId())
+					.orElse(null);
 
-		 /*User currentUser = authenticationService.getCurrentUser(); // to ask
-		 product.setCreatedBy(currentUser);*/
+			if (productCategory == null) {
+				throw new RuntimeException("Invalid product category ID: " + productDTO.getProductCategoryId()
+						+ ". Please select a valid category.");
+			}
+
+			product.setCategory(productCategory);
+			// product.setProductCategory(productCategory);
+		} else {
+			throw new RuntimeException("Product category ID is required.");
+		}*/
+		ProductCategory productCategory = productCategoryRepository.findById(productDTO.getProductCategoryId())
+				.orElse(null);
+		product.setCategory(productCategory);
+		System.out.println("Product category "+product.getCategory());
 
 		User currentUser = authenticationService.getCurrentUser();
 		product.setCreatedBy(currentUser);
@@ -87,8 +97,8 @@ public class ProductServiceImpl implements ProductService {
 		Product product = productRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Product not found for id : " + id));
 
-		 User currentUser = authenticationService.getCurrentUser();
-		 product.setUpdatedBy(currentUser);
+		User currentUser = authenticationService.getCurrentUser();
+		product.setUpdatedBy(currentUser);
 
 		return new ProductDTO(product);
 	}
@@ -97,6 +107,11 @@ public class ProductServiceImpl implements ProductService {
 	public void deleteProduct(long id) {
 		productRepository.deleteById(id);
 
+	}
+
+	@Override
+	public boolean isNameAlreadyExit(String name, Long ignoreId) {
+		return (this.productRepository.getNameByIgnoreId(name, ignoreId) != null);
 	}
 
 }

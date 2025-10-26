@@ -37,14 +37,16 @@ public class ProductCategoryController {
 	//update
 	@GetMapping("/pdtCategory/edit/{id}")
     public String updatepdtCategoryForm(@PathVariable("id") long id, Model model) {
-        ProductCategoryDTO pdtCategoryDTO = pdtCategoryService.getById(id);
+        ProductCategoryDTO pdtCategoryDTO = pdtCategoryService.getAllProductCategoryList().stream()
+				.filter(c -> c.getId().equals(id)).findFirst()
+				.orElseThrow(() -> new RuntimeException("Category not found: " + id));
         model.addAttribute("pdtCategoryDTO", pdtCategoryDTO); // ✅ fixed
         return "pages/products/productcategory-setup";
     }
 
 	//delete
    @GetMapping("/pdtCategory/delete/{id}")
-    public String deletePdtCategory(@PathVariable(value = "productCategoryId") Long id) {
+    public String deletePdtCategory(@PathVariable(value = "id") Long id) {
 	   pdtCategoryService.deleteProductCategory(id);
         return "redirect:/productcategory-list";
    }
@@ -52,6 +54,14 @@ public class ProductCategoryController {
    @PostMapping("productcategory-setup")
 	public String pdtCategorySetupPost(@ModelAttribute("pdtCategoryDTO") @Valid ProductCategoryDTO pdtCategoryDTO, BindingResult result, Model model, RedirectAttributes attr) {
 	   try {
+
+		   validateRequest(pdtCategoryDTO, result);
+
+		   if (result.hasErrors()) {
+				model.addAttribute("errorMsg", "Please fill all required fields!");
+				return "pages/products/productcategory-setup";
+			}
+
 		   ProductCategoryDTO saved = this.pdtCategoryService.saveProductCategory(pdtCategoryDTO);
 			attr.addFlashAttribute("successMsg", "Category saved successfully!");
 			return "redirect:/productcategory-list";
@@ -63,4 +73,11 @@ public class ProductCategoryController {
 
 	}
 
+   private void validateRequest(@Valid ProductCategoryDTO pdtCategoryDTO, BindingResult result) {
+		if(pdtCategoryDTO.getName() != null) {
+			if(this.pdtCategoryService.isNameAlreadyExit(pdtCategoryDTO.getName(), pdtCategoryDTO.getId())) {
+				result.rejectValue("name", "pdtCategoryDTO.name", "Name already used!");
+			}
+		}
+	}
 }

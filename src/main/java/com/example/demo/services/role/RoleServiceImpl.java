@@ -49,4 +49,9 @@ public class RoleServiceImpl implements RoleService {
 	public void deleteRole(long id) {
 		roleRepository.deleteById(id);
 	}
+
+	@Override
+	public boolean isNameAlreadyExit(String name, Long ignoreId) {
+		return (this.roleRepository.getNameByIgnoreId(name, ignoreId) != null);
+	}
 }
