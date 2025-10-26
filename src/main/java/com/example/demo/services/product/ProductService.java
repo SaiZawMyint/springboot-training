@@ -15,7 +15,7 @@ public interface ProductService {
 	ProductDTO getById(Long id);
 
 	// delete
-	void deleteProduct(long id);
+	void deleteProduct(long id) throws Exception;
 	
 	boolean isNameAlreadyExit(String name, Long ignoreId);
 }

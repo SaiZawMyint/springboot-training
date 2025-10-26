@@ -32,7 +32,7 @@ public class ProductDTO extends BaseDTO{
 	private BigDecimal prices;
 	
 	private ProductCategoryDTO productCategoryDTO;
-	private Long productCategoryId;
+	private Long productCategoryId; // product_category_id
 
 	public ProductDTO(Product product) {
 		if(product != null) {
