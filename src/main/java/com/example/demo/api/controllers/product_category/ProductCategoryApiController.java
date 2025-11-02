@@ -1,4 +1,4 @@
-package com.example.demo.api.controllers.products;
+package com.example.demo.api.controllers.product_category;
 
 import java.util.List;
 
@@ -13,46 +13,47 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.api.requests.Product.ProductCreateRequest;
+import com.example.demo.api.requests.ProductCategory.ProductCategoryCreateRequest;
 import com.example.demo.api.response.BaseResponse;
-import com.example.demo.api.response.Product.ProductResponse;
-import com.example.demo.dtos.product.ProductDTO;
-import com.example.demo.services.product.ProductService;
+import com.example.demo.api.response.ProductCategory.ProductCategoryResponse;
+import com.example.demo.dtos.product.ProductCategoryDTO;
+import com.example.demo.services.product.ProductCategoryService;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductApiController {
+@RequestMapping("/api/productcategory")
+public class ProductCategoryApiController {
+	
 	@Autowired
-	private ProductService productService;
-
-	@GetMapping("/list")
-	public ResponseEntity<BaseResponse<?>> getProductList(){
-		BaseResponse<List<ProductDTO>> response = new BaseResponse<>(); //return data from data P{data}
+	private ProductCategoryService pdtCategoryService;
+	
+	@GetMapping("/pdtCategorylist")
+	public ResponseEntity<BaseResponse<?>> getpdtCategoryList() {
+		BaseResponse<List<ProductCategoryResponse>> response = new BaseResponse<List<ProductCategoryResponse>>();
 
 		try {
 			response.setSuccess(true);
 			response.setStatusCode(1);
-			response.setData(productService.getAllProductList());
+			response.setData(pdtCategoryService.getAllProductCategoryList().stream().map(t -> new ProductCategoryResponse().copyFormDTO(t))
+					.toList());
 
 			return ResponseEntity.ok().body(response);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			response.setSuccess(false);
 			response.setStatusCode(-1);
 			return ResponseEntity.internalServerError().body(response);
 		}
-
 	}
 	
-	@PostMapping("/create")
-	public ResponseEntity<BaseResponse<?>> createProduct(@RequestBody ProductCreateRequest request) {
-		BaseResponse<ProductResponse> response = new BaseResponse<ProductResponse>();
+	@PostMapping("/createpdtCategory")
+	public ResponseEntity<BaseResponse<?>> createProduct(@RequestBody ProductCategoryCreateRequest request) {
+		BaseResponse<ProductCategoryResponse> response = new BaseResponse<ProductCategoryResponse>();
 		try {
-			ProductDTO saved = productService.saveProduct(request.convertToDTO());
+			ProductCategoryDTO saved = pdtCategoryService.saveProductCategory(request.convertToDTO());
 
-			response.setData(new ProductResponse().copyFormDTO(saved));
+			response.setData(new ProductCategoryResponse().copyFormDTO(saved));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Create product success!");
+			//response.setMessage("Create product category success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
@@ -63,15 +64,15 @@ public class ProductApiController {
 		return ResponseEntity.ok(response);
 	}
 	
-    //update
-    @PutMapping("/product/{id}")
-    public ResponseEntity<BaseResponse<?>> updateProduct(@PathVariable Long id, @RequestBody ProductCreateRequest request) {
-    	BaseResponse<ProductResponse> response = new BaseResponse<ProductResponse>();
+	//update
+    @PutMapping("/productcategory/{id}")
+    public ResponseEntity<BaseResponse<?>> updatepdtCategory(@PathVariable Long id, @RequestBody ProductCategoryCreateRequest request) {
+    	BaseResponse<ProductCategoryResponse> response = new BaseResponse<ProductCategoryResponse>();
     	
     	try {
-    		ProductDTO updatedProduct = productService.getById(id);
+    		ProductCategoryDTO updatedpdtCategory = pdtCategoryService.getById(id);
 
-			response.setData(new ProductResponse().copyFormDTO(updatedProduct));
+			response.setData(new ProductCategoryResponse().copyFormDTO(updatedpdtCategory));
 			response.setStatusCode(1);
 			response.setSuccess(true);
 			//response.setMessage("Update product success!");
@@ -85,13 +86,13 @@ public class ProductApiController {
     }
 	
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<BaseResponse<?>> deleteProduct(@PathVariable("id") Long pId){
+	public ResponseEntity<BaseResponse<?>> deletepdtCategory(@PathVariable("id") Long pId){
 		BaseResponse<Long> response = new BaseResponse<Long>();
 		try {
-			this.productService.deleteProduct(pId);
+			this.pdtCategoryService.deleteProductCategory(pId);
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Delete product success!");
+			//response.setMessage("Delete product category success!");
 			response.setData(pId);
 		} catch (Exception e) {
 			response.setStatusCode(-1);
@@ -101,4 +102,5 @@ public class ProductApiController {
 		}
 		return ResponseEntity.ok(response);
 	}
+
 }

@@ -28,9 +28,8 @@ public class Product extends BaseEntity{
     @JsonManagedReference
 	@ManyToOne
     @JoinColumn(name = "category_id")
-	private ProductCategory category;  // Many-to-One ProductCategory
+	private ProductCategory category;  // Many-to-One ProductCategory 
+    //call from pd to pdt category
 
-    @OneToMany(mappedBy = "product")
-    private List<Item> items;         // One-to-Many Items
 
 }

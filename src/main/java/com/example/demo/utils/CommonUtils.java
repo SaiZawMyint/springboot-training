@@ -1,5 +1,6 @@
 package com.example.demo.utils;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,5 +21,10 @@ public class CommonUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat(standardDateInputFormat);
 		String retDate = sdf.format(dateTime);
 		return retDate;
+	}
+
+	public static String formatNumber(BigDecimal price) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

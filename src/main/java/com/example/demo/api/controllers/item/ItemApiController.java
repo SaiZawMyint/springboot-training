@@ -1,4 +1,4 @@
-package com.example.demo.api.controllers;
+package com.example.demo.api.controllers.item;
 
 import java.util.List;
 
@@ -13,27 +13,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.api.requests.User.UserRequest;
+import com.example.demo.api.requests.Item.ItemCreateRequest;
 import com.example.demo.api.response.BaseResponse;
-import com.example.demo.api.response.User.UserResponse;
-import com.example.demo.dtos.user.UserDto;
-import com.example.demo.services.user.UserService;
+import com.example.demo.api.response.Item.ItemResponse;
+import com.example.demo.dtos.item.ItemDTO;
+import com.example.demo.services.item.ItemService;
 
-@RestController("apiUserController")
-@RequestMapping("/api/user")
-public class UserController {
+@RestController
+@RequestMapping("/api/item")
+public class ItemApiController {
 	@Autowired
-	private UserService userService;
+	private ItemService itemService;
 
-	@GetMapping("/list")
-	public ResponseEntity<BaseResponse<?>> getUserList() {
-		BaseResponse<List<UserResponse>> response = new BaseResponse<List<UserResponse>>();
+	@GetMapping("/item-list")
+	public ResponseEntity<BaseResponse<?>> getItemList() {
+		BaseResponse<List<ItemDTO>> response = new BaseResponse<>();
 
 		try {
 			response.setSuccess(true);
 			response.setStatusCode(1);
-			response.setData(
-					userService.getAllUserList().stream().map(t -> new UserResponse().copyFormDTO(t)).toList());
+			response.setData(itemService.getAllItemList());
 
 			return ResponseEntity.ok().body(response);
 		} catch (Exception e) {
@@ -41,18 +40,19 @@ public class UserController {
 			response.setStatusCode(-1);
 			return ResponseEntity.internalServerError().body(response);
 		}
+
 	}
 
-	@PostMapping("/create")
-	public ResponseEntity<BaseResponse<?>> createUser(@RequestBody UserRequest request) {
-		BaseResponse<UserResponse> response = new BaseResponse<UserResponse>();
+	@PostMapping("/item-create")
+	public ResponseEntity<BaseResponse<?>> createItem(@RequestBody ItemCreateRequest request) {
+		BaseResponse<ItemResponse> response = new BaseResponse<ItemResponse>();
 		try {
-			UserDto saved = userService.saveUser(request.convertToDTO());
+			ItemDTO saved = itemService.saveItem(request.convertToDTO());
 
-			response.setData(new UserResponse().copyFormDTO(saved));
+			response.setData(new ItemResponse().copyFormDTO(saved));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			// response.setMessage("Create User success!");
+			// response.setMessage("Create product success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
@@ -60,43 +60,44 @@ public class UserController {
 			return ResponseEntity.internalServerError().body(response);
 		}
 
-		return ResponseEntity.ok(response);
-	}
-
-	// update
-	@PutMapping("/user/{id}")
-	public ResponseEntity<BaseResponse<?>> updateRole(@PathVariable Long id, @RequestBody UserRequest request) {
-		BaseResponse<UserResponse> response = new BaseResponse<UserResponse>();
-
-		try {
-			UserDto updtUser = userService.getById(id);
-
-			response.setData(new UserResponse().copyFormDTO(updtUser));
-			response.setStatusCode(1);
-			response.setSuccess(true);
-			// response.setMessage("Update Role success!");
-		} catch (Exception e) {
-			response.setStatusCode(-1);
-			response.setSuccess(false);
-			// response.setMessage(e.getMessage());
-			return ResponseEntity.internalServerError().body(response);
-		}
 		return ResponseEntity.ok(response);
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<BaseResponse<?>> deleteRole(@PathVariable("id") Long pId){
-		BaseResponse<Long> response = new BaseResponse<Long>();
-		try {
-			this.userService.deleteUser(pId);
+	//update
+    @PutMapping("/item/{id}")
+    public ResponseEntity<BaseResponse<?>> updateItem(@PathVariable Long id, @RequestBody ItemCreateRequest request) {
+    	BaseResponse<ItemResponse> response = new BaseResponse<ItemResponse>();
+    	
+    	try {
+    		ItemDTO updttem = itemService.getById(id); //get data fromm req go service, entity update, convert dto and , convert to response
+
+			response.setData(new ItemResponse().copyFormDTO(updttem));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Delete Role success!");
-			response.setData(pId);
+			//response.setMessage("Update Item success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
 			//response.setMessage(e.getMessage());
+			return ResponseEntity.internalServerError().body(response);
+		}
+    	return ResponseEntity.ok(response);
+    }
+	
+
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<BaseResponse<?>> deleteProduct(@PathVariable("id") Long pId) {
+		BaseResponse<Long> response = new BaseResponse<Long>();
+		try {
+			this.itemService.deleteItem(pId);
+			response.setStatusCode(1);
+			response.setSuccess(true);
+			// response.setMessage("Delete product success!");
+			response.setData(pId);
+		} catch (Exception e) {
+			response.setStatusCode(-1);
+			response.setSuccess(false);
+			// response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 		return ResponseEntity.ok(response);
