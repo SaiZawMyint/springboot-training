@@ -53,37 +53,60 @@ public class ProductCategoryApiController {
 			response.setData(new ProductCategoryResponse().copyFormDTO(saved));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Create product category success!");
+			response.setMessage("Create product category success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 
 		return ResponseEntity.ok(response);
-	}
-	
+	}   
+    
 	//update
-    @PutMapping("/productcategory/{id}")
+	@PutMapping("/pdtcategory/{id}")
     public ResponseEntity<BaseResponse<?>> updatepdtCategory(@PathVariable Long id, @RequestBody ProductCategoryCreateRequest request) {
     	BaseResponse<ProductCategoryResponse> response = new BaseResponse<ProductCategoryResponse>();
     	
     	try {
-    		ProductCategoryDTO updatedpdtCategory = pdtCategoryService.getById(id);
+    		ProductCategoryDTO updtpdtCategory = pdtCategoryService.getById(id);
+	        // 1. Fetch existing product
+	    
+	        if (updtpdtCategory == null) {
+	            response.setStatusCode(-1);
+	            response.setSuccess(false);
+	            response.setMessage("Product Category not found with ID: " + id);
+	            return ResponseEntity.internalServerError().body(response);
+	        }
 
-			response.setData(new ProductCategoryResponse().copyFormDTO(updatedpdtCategory));
-			response.setStatusCode(1);
-			response.setSuccess(true);
-			//response.setMessage("Update product success!");
-		} catch (Exception e) {
-			response.setStatusCode(-1);
-			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
-			return ResponseEntity.internalServerError().body(response);
-		}
-    	return ResponseEntity.ok(response);
-    }
+	        // 2. Update fields using the request
+	        updtpdtCategory.setCode(request.getCode());
+	        updtpdtCategory.setName(request.getName());
+	        updtpdtCategory.setImageUrl(request.getImageUrl());
+	        
+	        // ... update other fields as needed
+
+	        // 3. Save updated product
+	        ProductCategoryDTO updatedPdtCategory = pdtCategoryService.saveProductCategory(updtpdtCategory);
+
+	        // 4. Set response
+	        response.setData(new ProductCategoryResponse().copyFormDTO(updatedPdtCategory));
+	        response.setStatusCode(1);
+	        response.setSuccess(true);
+	        response.setMessage("Product updated successfully!");
+
+	        return ResponseEntity.ok(response);
+
+	    } catch (Exception e) {
+	        response.setStatusCode(-1);
+	        response.setSuccess(false);
+	        response.setMessage("Error updating product: " + e.getMessage());
+	        return ResponseEntity.internalServerError().body(response);
+	    }
+	}
+
+    
 	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<BaseResponse<?>> deletepdtCategory(@PathVariable("id") Long pId){
@@ -92,12 +115,12 @@ public class ProductCategoryApiController {
 			this.pdtCategoryService.deleteProductCategory(pId);
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Delete product category success!");
+			response.setMessage("Delete product category success!");
 			response.setData(pId);
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 		return ResponseEntity.ok(response);

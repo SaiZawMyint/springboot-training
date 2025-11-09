@@ -24,7 +24,7 @@ import com.example.demo.services.role.RoleService;
 public class RoleApiController {
 	@Autowired
 	private RoleService roleService;
-	
+
 	@GetMapping("/list")
 	public ResponseEntity<BaseResponse<?>> getRoleList() {
 		BaseResponse<List<RoleResponse>> response = new BaseResponse<List<RoleResponse>>();
@@ -32,8 +32,8 @@ public class RoleApiController {
 		try {
 			response.setSuccess(true);
 			response.setStatusCode(1);
-			response.setData(roleService.getAllRoleList().stream().map(t -> new RoleResponse().copyFormDTO(t))
-					.toList());
+			response.setData(
+					roleService.getAllRoleList().stream().map(t -> new RoleResponse().copyFormDTO(t)).toList());
 
 			return ResponseEntity.ok().body(response);
 		} catch (Exception e) {
@@ -42,7 +42,7 @@ public class RoleApiController {
 			return ResponseEntity.internalServerError().body(response);
 		}
 	}
-	
+
 	@PostMapping("/create")
 	public ResponseEntity<BaseResponse<?>> createRole(@RequestBody RoleCreateRequest request) {
 		BaseResponse<RoleResponse> response = new BaseResponse<RoleResponse>();
@@ -52,51 +52,70 @@ public class RoleApiController {
 			response.setData(new RoleResponse().copyFormDTO(saved));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Create Role success!");
+			response.setMessage("Create Role success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 
 		return ResponseEntity.ok(response);
 	}
-	
-	//update
-    @PutMapping("/role/{id}")
-    public ResponseEntity<BaseResponse<?>> updateRole(@PathVariable Long id, @RequestBody RoleCreateRequest request) {
-    	BaseResponse<RoleResponse> response = new BaseResponse<RoleResponse>();
-    	
-    	try {
-    		RoleDto updtRole = roleService.getById(id);
 
+	//update
+	@PutMapping("/role/{id}")
+	public ResponseEntity<BaseResponse<?>> updateRole(@PathVariable("id") Long id,
+			@RequestBody RoleCreateRequest request) {
+
+		BaseResponse<RoleResponse> response = new BaseResponse<>();
+
+		try {
+			// 1. Fetch existing role
+			RoleDto existingRole = roleService.getById(id);
+			if (existingRole == null) {
+				response.setStatusCode(-1);
+				response.setSuccess(false);
+				response.setMessage("Role not found with ID: " + id);
+				return ResponseEntity.internalServerError().body(response);
+			}
+
+			// 2. Update fields using the request
+			existingRole.setName(request.getName());
+			existingRole.setCode(request.getCode());
+
+			// 3. Save updated role
+			RoleDto updtRole = roleService.saveRole(existingRole);
+
+			// 4. Set response
 			response.setData(new RoleResponse().copyFormDTO(updtRole));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Update Role success!");
+			response.setMessage("Role updated successfully!");
+
+			return ResponseEntity.ok(response);
+
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage("Error updating role: " + e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
-    	return ResponseEntity.ok(response);
-    }
-	
+	}
+
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<BaseResponse<?>> deleteRole(@PathVariable("id") Long pId){
+	public ResponseEntity<BaseResponse<?>> deleteRole(@PathVariable("id") Long id) {
 		BaseResponse<Long> response = new BaseResponse<Long>();
 		try {
-			this.roleService.deleteRole(pId);
+			this.roleService.deleteRole(id);
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Delete Role success!");
-			response.setData(pId);
+			response.setMessage("Delete Role success!");
+			response.setData(id);
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 		return ResponseEntity.ok(response);

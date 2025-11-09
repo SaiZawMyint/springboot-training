@@ -9,4 +9,6 @@ public class BaseResponse<T> {
 	private boolean success;
 	private Integer statusCode;
 	private T data;
+	
+	private String message;
 }

@@ -29,7 +29,7 @@ public class UserController {
 	@GetMapping("/user_setup")
 	public String userSetupPage(Model model) {
 		model.addAttribute("userDTO", new UserDto());
-		//model.addAttribute("roleList", this.roleService.getAllRoleList());
+		model.addAttribute("roleList", this.roleService.getAllRoleList());
 		return "pages/user/user_setup";
 	}
 
@@ -57,27 +57,35 @@ public class UserController {
 	}
 
 	@PostMapping("user_setup")
-	public String saveUserInfo(@ModelAttribute("userDTO") @Valid UserDto userDTO, BindingResult result, Model model,
+	public String saveUserInfo(
+			   @Valid @ModelAttribute("userDTO") UserDto userDTO,BindingResult result, Model model,
 			RedirectAttributes attr) {
 
 		// ✅ 1. Custom validation before checking errors
 		validateRequest(userDTO, result);
 
 		if (result.hasErrors()) {
+			model.addAttribute("roleList", roleService.getAllRoleList());
 			model.addAttribute("errorMsg", "Please fill all required fields!");
 			return "pages/user/user_setup";
 		}
 
 		try {
+			
+			if(userDTO.getRoleId() == null) {
+				model.addAttribute("roleList", roleService.getAllRoleList());
+				model.addAttribute("errorMsg", "Please fill all required fields!");
+				return "pages/user/user_setup";
+			}
 			// ✅ 2. Save the user
-			UserDto userDto = userService.saveUser(userDTO);
+			userService.saveUser(userDTO);
 
 			// ✅ 3. Add success message and redirect
 			attr.addFlashAttribute("successMsg", "User saved successfully!");
 			return "redirect:/user_list";
 
 		} catch (Exception e) {
-			// ✅ 4. Catch and display actual error
+			model.addAttribute("roleList", roleService.getAllRoleList());
 			model.addAttribute("errorMsg", "Error saving user: " + e.getMessage());
 			return "pages/user/user_setup";
 		}

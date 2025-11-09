@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto extends BaseDTO{
-	//private Long id;
+	private Long id;
 	@NotBlank(message = "Username is required")
 	private String username;
 
@@ -31,14 +31,13 @@ public class UserDto extends BaseDTO{
 	private Long roleId;
 	public UserDto(User user) {
 		if(user != null) {
-		//	this.id = user.getId();
+		this.id = user.getId();
 			this.username = user.getUsername();
 			this.email = user.getEmail();
 			this.password = user.getPassword();
 			//this.role_id = user.getRole_id();
 			this.role = new RoleDto(user.getRole());
 			this.roleId = role.getId();
-
 
 			setCommonField(user);
 		}

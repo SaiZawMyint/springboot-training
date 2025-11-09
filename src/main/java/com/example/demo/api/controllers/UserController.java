@@ -24,24 +24,29 @@ import com.example.demo.services.user.UserService;
 public class UserController {
 	@Autowired
 	private UserService userService;
-
+	
 	@GetMapping("/list")
 	public ResponseEntity<BaseResponse<?>> getUserList() {
-		BaseResponse<List<UserResponse>> response = new BaseResponse<List<UserResponse>>();
+	    BaseResponse<List<UserResponse>> response = new BaseResponse<>();
 
-		try {
-			response.setSuccess(true);
-			response.setStatusCode(1);
-			response.setData(
-					userService.getAllUserList().stream().map(t -> new UserResponse().copyFormDTO(t)).toList());
+	    try {
+	        response.setSuccess(true);
+	        response.setStatusCode(1);
+	        response.setData(
+	            userService.getAllUserList()
+	                .stream()
+	                .map(t -> new UserResponse().copyFormDTO(t))
+	                .toList()
+	        );
 
-			return ResponseEntity.ok().body(response);
-		} catch (Exception e) {
-			response.setSuccess(false);
-			response.setStatusCode(-1);
-			return ResponseEntity.internalServerError().body(response);
-		}
+	        return ResponseEntity.ok().body(response);
+	    } catch (Exception e) {
+	        response.setSuccess(false);
+	        response.setStatusCode(-1);
+	        return ResponseEntity.internalServerError().body(response);
+	    }
 	}
+
 
 	@PostMapping("/create")
 	public ResponseEntity<BaseResponse<?>> createUser(@RequestBody UserRequest request) {
@@ -52,51 +57,68 @@ public class UserController {
 			response.setData(new UserResponse().copyFormDTO(saved));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			// response.setMessage("Create User success!");
+			 response.setMessage("Create User success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			// response.setMessage(e.getMessage());
+			 response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 
-		return ResponseEntity.ok(response);
-	}
-
-	// update
-	@PutMapping("/user/{id}")
-	public ResponseEntity<BaseResponse<?>> updateRole(@PathVariable Long id, @RequestBody UserRequest request) {
-		BaseResponse<UserResponse> response = new BaseResponse<UserResponse>();
-
-		try {
-			UserDto updtUser = userService.getById(id);
-
-			response.setData(new UserResponse().copyFormDTO(updtUser));
-			response.setStatusCode(1);
-			response.setSuccess(true);
-			// response.setMessage("Update Role success!");
-		} catch (Exception e) {
-			response.setStatusCode(-1);
-			response.setSuccess(false);
-			// response.setMessage(e.getMessage());
-			return ResponseEntity.internalServerError().body(response);
-		}
 		return ResponseEntity.ok(response);
 	}
 	
+	// update
+	@PutMapping("/user/{id}")
+	public ResponseEntity<BaseResponse<?>> updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
+		BaseResponse<UserResponse> response = new BaseResponse<UserResponse>();
+
+		try {
+			// 1. Fetch existing user
+			UserDto existingUser = userService.getById(id);
+			if (existingUser == null) {
+				response.setStatusCode(-1);
+				response.setSuccess(false);
+				response.setMessage("User not found with ID: " + id);
+				return ResponseEntity.internalServerError().body(response);
+			}
+
+			// 2. Update fields using the request
+			existingUser.setUsername(request.getUsername());
+			existingUser.setEmail(request.getEmail());
+
+			// 3. Save updated user
+			UserDto updtUser = userService.saveUser(existingUser);
+
+			// 4. Set response
+			response.setData(new UserResponse().copyFormDTO(updtUser));
+			response.setStatusCode(1);
+			response.setSuccess(true);
+			response.setMessage("User updated successfully!");
+
+			return ResponseEntity.ok(response);
+
+		} catch (Exception e) {
+			response.setStatusCode(-1);
+			response.setSuccess(false);
+			response.setMessage("Error updating user: " + e.getMessage());
+			return ResponseEntity.internalServerError().body(response);
+		}
+	}
+
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<BaseResponse<?>> deleteRole(@PathVariable("id") Long pId){
+	public ResponseEntity<BaseResponse<?>> deleteUser(@PathVariable("id") Long pId){
 		BaseResponse<Long> response = new BaseResponse<Long>();
 		try {
 			this.userService.deleteUser(pId);
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Delete Role success!");
+			response.setMessage("Delete User success!");
 			response.setData(pId);
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 		return ResponseEntity.ok(response);

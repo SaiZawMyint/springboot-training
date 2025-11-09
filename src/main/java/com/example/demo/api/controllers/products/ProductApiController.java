@@ -27,12 +27,14 @@ public class ProductApiController {
 
 	@GetMapping("/list")
 	public ResponseEntity<BaseResponse<?>> getProductList(){
-		BaseResponse<List<ProductDTO>> response = new BaseResponse<>(); //return data from data P{data}
+		BaseResponse<List<ProductResponse>> response = new BaseResponse<>(); //return data from data P{data}
 
 		try {
 			response.setSuccess(true);
 			response.setStatusCode(1);
-			response.setData(productService.getAllProductList());
+			response.setData(productService.getAllProductList().stream().map(t -> new ProductResponse().copyFormDTO(t))
+					.toList());
+
 
 			return ResponseEntity.ok().body(response);
 		}catch (Exception e) {
@@ -52,37 +54,62 @@ public class ProductApiController {
 			response.setData(new ProductResponse().copyFormDTO(saved));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Create product success!");
+			response.setMessage("Create product success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 
 		return ResponseEntity.ok(response);
 	}
 	
-    //update
-    @PutMapping("/product/{id}")
-    public ResponseEntity<BaseResponse<?>> updateProduct(@PathVariable Long id, @RequestBody ProductCreateRequest request) {
-    	BaseResponse<ProductResponse> response = new BaseResponse<ProductResponse>();
-    	
-    	try {
-    		ProductDTO updatedProduct = productService.getById(id);
+	//update
+	@PutMapping("/product/{id}")
+	public ResponseEntity<BaseResponse<?>> updateProduct(
+			  @PathVariable("id") Long id,
+	        @RequestBody ProductCreateRequest request) {
 
-			response.setData(new ProductResponse().copyFormDTO(updatedProduct));
-			response.setStatusCode(1);
-			response.setSuccess(true);
-			//response.setMessage("Update product success!");
-		} catch (Exception e) {
-			response.setStatusCode(-1);
-			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
-			return ResponseEntity.internalServerError().body(response);
-		}
-    	return ResponseEntity.ok(response);
-    }
+	    BaseResponse<ProductResponse> response = new BaseResponse<>();
+
+	    try {
+	        // 1. Fetch existing product
+	        ProductDTO existingProduct = productService.getById(id);
+	        if (existingProduct == null) {
+	            response.setStatusCode(-1);
+	            response.setSuccess(false);
+	            response.setMessage("Product not found with ID: " + id);
+	            return ResponseEntity.internalServerError().body(response);
+	        }
+
+	        // 2. Update fields using the request
+	        existingProduct.setName(request.getName());
+	        existingProduct.setPrice(request.getPrice());
+	        existingProduct.setDescription(request.getDescription());
+	        existingProduct.setProductCategoryId(request.getProductCategoryId());
+	        // ... update other fields as needed
+
+	        // 3. Save updated product
+	        ProductDTO updatedProduct = productService.saveProduct(existingProduct);
+
+	        // 4. Set response
+	        response.setData(new ProductResponse().copyFormDTO(updatedProduct));
+	        response.setStatusCode(1);
+	        response.setSuccess(true);
+	        response.setMessage("Product updated successfully!");
+
+	        return ResponseEntity.ok(response);
+
+	    } catch (Exception e) {
+	        response.setStatusCode(-1);
+	        response.setSuccess(false);
+	        response.setMessage("Error updating product: " + e.getMessage());
+	        return ResponseEntity.internalServerError().body(response);
+	    }
+	}
+
+    
 	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<BaseResponse<?>> deleteProduct(@PathVariable("id") Long pId){
@@ -91,12 +118,12 @@ public class ProductApiController {
 			this.productService.deleteProduct(pId);
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			//response.setMessage("Delete product success!");
+			response.setMessage("Delete product success!");
 			response.setData(pId);
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 		return ResponseEntity.ok(response);

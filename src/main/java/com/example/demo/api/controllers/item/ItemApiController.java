@@ -27,13 +27,15 @@ public class ItemApiController {
 
 	@GetMapping("/item-list")
 	public ResponseEntity<BaseResponse<?>> getItemList() {
-		BaseResponse<List<ItemDTO>> response = new BaseResponse<>();
+		BaseResponse<List<ItemResponse>> response = new BaseResponse<>();
 
 		try {
 			response.setSuccess(true);
 			response.setStatusCode(1);
-			response.setData(itemService.getAllItemList());
+			response.setData(itemService.getAllItemList().stream().map(t -> new ItemResponse().copyFormDTO(t))
+					.toList());
 
+		
 			return ResponseEntity.ok().body(response);
 		} catch (Exception e) {
 			response.setSuccess(false);
@@ -52,37 +54,62 @@ public class ItemApiController {
 			response.setData(new ItemResponse().copyFormDTO(saved));
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			// response.setMessage("Create product success!");
+			 response.setMessage("Create product success!");
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			// response.setMessage(e.getMessage());
+			response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 
 		return ResponseEntity.ok(response);
 	}
 	
-	//update
-    @PutMapping("/item/{id}")
-    public ResponseEntity<BaseResponse<?>> updateItem(@PathVariable Long id, @RequestBody ItemCreateRequest request) {
-    	BaseResponse<ItemResponse> response = new BaseResponse<ItemResponse>();
-    	
-    	try {
-    		ItemDTO updttem = itemService.getById(id); //get data fromm req go service, entity update, convert dto and , convert to response
+	@PutMapping("/item/{id}")
+	public ResponseEntity<BaseResponse<?>> updateItem(
+	        @PathVariable("id") Long id,
+	        @RequestBody ItemCreateRequest request) {
 
-			response.setData(new ItemResponse().copyFormDTO(updttem));
-			response.setStatusCode(1);
-			response.setSuccess(true);
-			//response.setMessage("Update Item success!");
-		} catch (Exception e) {
-			response.setStatusCode(-1);
-			response.setSuccess(false);
-			//response.setMessage(e.getMessage());
-			return ResponseEntity.internalServerError().body(response);
-		}
-    	return ResponseEntity.ok(response);
-    }
+	    BaseResponse<ItemResponse> response = new BaseResponse<>();
+
+	    try {
+	        // 1. Fetch existing item by ID
+	        ItemDTO existingItem = itemService.getById(id);
+	        if (existingItem == null) {
+	            response.setStatusCode(-1);
+	            response.setSuccess(false);
+	            response.setMessage("Item not found with ID: " + id);
+	    		return ResponseEntity.internalServerError().body(response);
+	        }
+
+	        // 2. Update entity fields from request
+	        existingItem.setName(request.getName());
+	        existingItem.setSellPrice(request.getSellPrice());
+	        existingItem.setOriginalPrice(request.getOriginalPrice());
+	        existingItem.setQuantity(request.getQuantity());
+	        existingItem.setStatus(request.getStatus());
+	        
+	        existingItem.setStatusDesc(request.getStatusDesc());
+
+	        // 3. Save updated item via service
+	        ItemDTO updatedItem = itemService.saveItem(existingItem);
+
+	        // 4. Convert to response DTO
+	        response.setData(new ItemResponse().copyFormDTO(updatedItem));
+	        response.setStatusCode(1);
+	        response.setSuccess(true);
+	        response.setMessage("Item updated successfully!");
+
+	        return ResponseEntity.ok(response);
+
+	    } catch (Exception e) {
+	        response.setStatusCode(-1);
+	        response.setSuccess(false);
+	        response.setMessage("Error updating item: " + e.getMessage());
+	        return ResponseEntity.internalServerError().body(response);
+	    }
+	}
+
 	
 
 	@DeleteMapping("/delete/{id}")
@@ -92,12 +119,12 @@ public class ItemApiController {
 			this.itemService.deleteItem(pId);
 			response.setStatusCode(1);
 			response.setSuccess(true);
-			// response.setMessage("Delete product success!");
+			response.setMessage("Delete product success!");
 			response.setData(pId);
 		} catch (Exception e) {
 			response.setStatusCode(-1);
 			response.setSuccess(false);
-			// response.setMessage(e.getMessage());
+		    response.setMessage(e.getMessage());
 			return ResponseEntity.internalServerError().body(response);
 		}
 		return ResponseEntity.ok(response);

@@ -72,6 +72,7 @@ public class ProductController {
 	        model.addAttribute("errorMsg", "Please fill all required fields!");
 	        return "pages/products/product-setup";
 	    }
+	    
 
 	    try {
 	        // 3. Ensure categoryId is provided
